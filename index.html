@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <base target="_top">
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>CRM Mini App</title>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+
+    body {
+      background:
+        linear-gradient(
+          135deg,
+          #0f172a,
+          #1e293b
+        );
+
+      min-height: 100vh;
+    }
+
+    .glass {
+
+      background:
+        rgba(255,255,255,0.1);
+
+      backdrop-filter:
+        blur(10px);
+
+      border:
+        1px solid rgba(255,255,255,0.2);
+    }
+
+  </style>
+
+</head>
+
+<body class="text-white flex items-center justify-center p-6">
+
+  <div class="glass rounded-3xl p-8 w-full max-w-md shadow-2xl">
+
+    <div class="text-center mb-6">
+
+      <img
+        id="picture"
+        class="w-24 h-24 rounded-full mx-auto mb-4 hidden"
+      />
+
+      <h1
+        id="name"
+        class="text-2xl font-bold"
+      >
+        CRM Mini App
+      </h1>
+
+      <p
+        id="status"
+        class="text-slate-300 mt-2"
+      >
+        Loading...
+      </p>
+
+    </div>
+
+    <div class="space-y-4">
+
+      <input
+        id="fullName"
+        type="text"
+        placeholder="Full Name"
+        class="w-full p-3 rounded-xl text-black"
+      />
+
+      <input
+        id="phone"
+        type="text"
+        placeholder="Phone"
+        class="w-full p-3 rounded-xl text-black"
+      />
+
+      <input
+        id="email"
+        type="email"
+        placeholder="Email"
+        class="w-full p-3 rounded-xl text-black"
+      />
+
+      <input
+        id="company"
+        type="text"
+        placeholder="Company"
+        class="w-full p-3 rounded-xl text-black"
+      />
+
+      <input
+        id="province"
+        type="text"
+        placeholder="Province"
+        class="w-full p-3 rounded-xl text-black"
+      />
+
+      <textarea
+        id="note"
+        placeholder="Note"
+        class="w-full p-3 rounded-xl text-black"
+      ></textarea>
+
+      <button
+        onclick="submitData()"
+        class="w-full bg-green-500 hover:bg-green-600 transition p-3 rounded-xl font-bold"
+      >
+        Submit CRM
+      </button>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const API_URL =
+      window.location.href;
+
+    let userProfile = null;
+
+    // =============================
+    // UI STATUS
+    // =============================
+
+    function updateStatus(message) {
+      console.log(message);
+      document
+        .getElementById("status")
+        .innerText = message;
+    }
+
+    // =============================
+    // MAIN
+    // =============================
+    async function main() {
+      try {
+        updateStatus("{*} Initializing LIFF . . . ");
+
+        await liff.init({
+          liffId: "2010190117-rx77wMJx",
+          withLoginOnExternalBrowser: true
+        });
+
+        await new Promise(resolve =>
+          setTimeout(resolve, 3000)
+        );
+        updateStatus("LIFF initialized");
+
+/*
+        if (!liff.isLoggedIn()) {
+          updateStatus("Logging in...");
+          liff.login();
+
+          return;
+        } 
+        else {
+            updateStatus("Logged-In...");
+            await new Promise(resolve =>
+              setTimeout(resolve, 3000)
+            );
+        }
+*/
+
+        await new Promise(resolve =>
+          setTimeout(resolve, 3000)
+        );
+        updateStatus("Getting profile...");
+
+        const profile = await liff.getProfile();
+
+        userProfile = profile;
+
+        document
+          .getElementById("name")
+          .innerText =
+            profile.displayName;
+
+        document
+          .getElementById("picture")
+          .src =
+            profile.pictureUrl;
+
+        document
+          .getElementById("picture")
+          .classList
+          .remove("hidden");
+
+        updateStatus("Ready");
+
+      } catch (err) {
+
+        console.error(err);
+
+        updateStatus("ERROR: " + err.message);
+      }
+    }
+
+    // =============================
+    // SUBMIT
+    // =============================
+    async function submitData() {
+      try {
+
+        updateStatus(
+          "Submitting..."
+        );
+
+        const formData =
+          new FormData();
+
+        formData.append(
+          "lineUserId",
+          userProfile.userId
+        );
+
+        formData.append(
+          "displayName",
+          userProfile.displayName
+        );
+
+        formData.append(
+          "pictureUrl",
+          userProfile.pictureUrl
+        );
+
+        formData.append(
+          "fullName",
+          document.getElementById("fullName").value
+        );
+
+        formData.append(
+          "phone",
+          document.getElementById("phone").value
+        );
+
+        formData.append(
+          "email",
+          document.getElementById("email").value
+        );
+
+        formData.append(
+          "company",
+          document.getElementById("company").value
+        );
+
+        formData.append(
+          "province",
+          document.getElementById("province").value
+        );
+
+        formData.append(
+          "note",
+          document.getElementById("note").value
+        );
+
+        const response =
+          await fetch(API_URL, {
+
+            method: "POST",
+
+            body: formData
+
+          });
+
+        const result =
+          await response.json();
+
+        console.log(result);
+
+        if (result.status === "success") {
+
+          updateStatus(
+            "SUCCESS: " + result.refID
+          );
+
+          alert(
+            "Saved Successfully\n" +
+            result.refID
+          );
+
+        } else {
+
+          updateStatus(
+            "API ERROR"
+          );
+
+          alert(
+            result.message
+          );
+
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+        updateStatus(
+          "FETCH ERROR"
+        );
+
+        alert(err);
+
+      }
+
+    }
+
+    main();
+
+  </script>
+
+</body>
+
+</html>
