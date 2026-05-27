@@ -36,10 +36,7 @@
         class="w-24 h-24 rounded-full mx-auto mb-4 hidden"
       />
 
-      <h1
-        id="name"
-        class="text-2xl font-bold"
-      >
+      <h1 id="name" class="text-2xl font-bold">
         LIFF GAS CRM Mini App
       </h1>
 
@@ -132,7 +129,8 @@
 
         await liff.init({
           liffId: "2010190117-rx77wMJx",
-          withLoginOnExternalBrowser: true
+          withLoginOnExternalBrowser: true,
+          redirectUrl: location.href
         });
 
         //await new Promise(resolve => setTimeout(resolve, 3000)
@@ -152,10 +150,7 @@
             );
         }
 
-
-        await new Promise(resolve =>
-          setTimeout(resolve, 3000)
-        );
+        //await new Promise(resolve => setTimeout(resolve, 3000));
         updateStatus("Getting profile...");
 
         const profile = await liff.getProfile();
