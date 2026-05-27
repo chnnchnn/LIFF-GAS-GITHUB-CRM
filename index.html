@@ -1,56 +1,34 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
   <base target="_top">
-
   <meta charset="UTF-8">
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   />
 
-  <title>CRM Mini App</title>
+  <title>LIFF GAS CRM</title>
 
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-
     body {
-      background:
-        linear-gradient(
-          135deg,
-          #0f172a,
-          #1e293b
-        );
-
+      background: linear-gradient(135deg, #0f172a, #1e293b);
       min-height: 100vh;
     }
 
     .glass {
-
-      background:
-        rgba(255,255,255,0.1);
-
-      backdrop-filter:
-        blur(10px);
-
-      border:
-        1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
     }
-
   </style>
-
 </head>
 
 <body class="text-white flex items-center justify-center p-6">
-
   <div class="glass rounded-3xl p-8 w-full max-w-md shadow-2xl">
-
     <div class="text-center mb-6">
 
       <img
@@ -62,13 +40,10 @@
         id="name"
         class="text-2xl font-bold"
       >
-        CRM Mini App
+        LIFF GAS CRM Mini App
       </h1>
 
-      <p
-        id="status"
-        class="text-slate-300 mt-2"
-      >
+      <p id="status" class="text-slate-300 mt-2">
         Loading...
       </p>
 
@@ -129,7 +104,10 @@
   </div>
 
   <script>
-
+    // ====================================
+    // CONFIG
+    // ====================================
+    //const API_URL = window.location.href;
     const API_URL = 'https://script.google.com/macros/s/AKfycbxroJAsYObFdBAi-GFd-NCdWvqTVfGQxTx6CswOFoQnfjPw96PRnjWCw3agsiOHYK5iNg/exec';
 
     let userProfile = null;
@@ -157,10 +135,10 @@
           withLoginOnExternalBrowser: true
         });
 
-        await new Promise(resolve =>
-          setTimeout(resolve, 3000)
+        //await new Promise(resolve => setTimeout(resolve, 3000)
         );
         updateStatus("LIFF initialized");
+
 
         if (!liff.isLoggedIn()) {
           updateStatus("Logging in...");
@@ -170,10 +148,10 @@
         } 
         else {
             updateStatus("Logged-In...");
-            await new Promise(resolve =>
-              setTimeout(resolve, 3000)
+            //await new Promise(resolve => setTimeout(resolve, 3000)
             );
         }
+
 
         await new Promise(resolve =>
           setTimeout(resolve, 3000)
@@ -214,66 +192,24 @@
     // =============================
     async function submitData() {
       try {
+        updateStatus("Submitting...");
 
-        updateStatus(
-          "Submitting..."
-        );
+        const formData = new FormData();
 
-        const formData =
-          new FormData();
-
-        formData.append(
-          "lineUserId",
-          userProfile.userId
-        );
-
-        formData.append(
-          "displayName",
-          userProfile.displayName
-        );
-
-        formData.append(
-          "pictureUrl",
-          userProfile.pictureUrl
-        );
-
-        formData.append(
-          "fullName",
-          document.getElementById("fullName").value
-        );
-
-        formData.append(
-          "phone",
-          document.getElementById("phone").value
-        );
-
-        formData.append(
-          "email",
-          document.getElementById("email").value
-        );
-
-        formData.append(
-          "company",
-          document.getElementById("company").value
-        );
-
-        formData.append(
-          "province",
-          document.getElementById("province").value
-        );
-
-        formData.append(
-          "note",
-          document.getElementById("note").value
-        );
+        formData.append("lineUserId", userProfile.userId);
+        formData.append("displayName", userProfile.displayName);
+        formData.append("pictureUrl", userProfile.pictureUrl);
+        formData.append("fullName", document.getElementById("fullName").value);
+        formData.append("phone", document.getElementById("phone").value);
+        formData.append("email", document.getElementById("email").value);
+        formData.append("company", document.getElementById("company").value);
+        formData.append("province", document.getElementById("province").value);
+        formData.append("note", document.getElementById("note").value);
 
         const response =
           await fetch(API_URL, {
-
             method: "POST",
-
             body: formData
-
           });
 
         const result =
@@ -282,7 +218,6 @@
         console.log(result);
 
         if (result.status === "success") {
-
           updateStatus(
             "SUCCESS: " + result.refID
           );
@@ -307,21 +242,16 @@
       } catch (err) {
 
         console.error(err);
-
         updateStatus(
           "FETCH ERROR"
         );
 
         alert(err);
-
       }
-
     }
 
     main();
 
   </script>
-
 </body>
-
 </html>
