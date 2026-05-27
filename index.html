@@ -130,8 +130,7 @@
 
   <script>
 
-    const API_URL =
-      window.location.href;
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxroJAsYObFdBAi-GFd-NCdWvqTVfGQxTx6CswOFoQnfjPw96PRnjWCw3agsiOHYK5iNg/exec';
 
     let userProfile = null;
 
@@ -163,7 +162,6 @@
         );
         updateStatus("LIFF initialized");
 
-/*
         if (!liff.isLoggedIn()) {
           updateStatus("Logging in...");
           liff.login();
@@ -176,7 +174,6 @@
               setTimeout(resolve, 3000)
             );
         }
-*/
 
         await new Promise(resolve =>
           setTimeout(resolve, 3000)
